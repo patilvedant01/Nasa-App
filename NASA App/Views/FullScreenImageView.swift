@@ -21,72 +21,75 @@ struct FullScreenImageView: View {
             Color.black.ignoresSafeArea()
             
             if let image = loader.image {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .scaleEffect(scale)
-                    .offset(offset)
-                    .gesture(
-                        SimultaneousGesture(
-                            MagnificationGesture()
-                                .onChanged { value in
-                                    scale = lastScale * value
-                                }
-                                .onEnded { _ in
-                                    lastScale = scale
-                                    if scale < 1 {
-                                        withAnimation {
-                                            scale = 1
-                                            lastScale = 1
-                                            offset = .zero
-                                            lastOffset = .zero
+                GeometryReader { geometry in
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .scaleEffect(scale)
+                        .offset(offset)
+                        .gesture(
+                            SimultaneousGesture(
+                                MagnificationGesture()
+                                    .onChanged { value in
+                                        scale = lastScale * value
+                                    }
+                                    .onEnded { _ in
+                                        lastScale = scale
+                                        if scale < 1 {
+                                            withAnimation {
+                                                scale = 1
+                                                lastScale = 1
+                                                offset = .zero
+                                                lastOffset = .zero
+                                            }
+                                        } else if scale > 4 {
+                                            withAnimation {
+                                                scale = 4
+                                                lastScale = 4
+                                            }
                                         }
-                                    } else if scale > 4 {
-                                        withAnimation {
-                                            scale = 4
-                                            lastScale = 4
+                                    },
+                                DragGesture()
+                                    .onChanged { value in
+                                        if scale > 1 {
+                                            let newOffset = CGSize(
+                                                width: lastOffset.width + value.translation.width,
+                                                height: lastOffset.height + value.translation.height
+                                            )
+                                            
+                                            // Calculate max allowed offset based on scale and available geometry
+                                            let maxOffsetX = (geometry.size.width * (scale - 1)) / 2
+                                            let maxOffsetY = (geometry.size.height * (scale - 1)) / 2
+                                            
+                                            offset = CGSize(
+                                                width: min(max(newOffset.width, -maxOffsetX), maxOffsetX),
+                                                height: min(max(newOffset.height, -maxOffsetY), maxOffsetY)
+                                            )
                                         }
                                     }
-                                },
-                            DragGesture()
-                                .onChanged { value in
-                                    if scale > 1 {
-                                        let newOffset = CGSize(
-                                            width: lastOffset.width + value.translation.width,
-                                            height: lastOffset.height + value.translation.height
-                                        )
-                                        
-                                        // Calculate max allowed offset based on scale
-                                        let maxOffsetX = (UIScreen.main.bounds.width * (scale - 1)) / 2
-                                        let maxOffsetY = (UIScreen.main.bounds.height * (scale - 1)) / 2
-                                        
-                                        // Clamp offset within bounds
-                                        offset = CGSize(
-                                            width: min(max(newOffset.width, -maxOffsetX), maxOffsetX),
-                                            height: min(max(newOffset.height, -maxOffsetY), maxOffsetY)
-                                        )
+                                    .onEnded { _ in
+                                        if scale > 1 {
+                                            lastOffset = offset
+                                        }
                                     }
-                                }
-                                .onEnded { _ in
-                                    if scale > 1 {
-                                        lastOffset = offset
-                                    }
-                                }
+                            )
                         )
-                    )
-                    .onTapGesture(count: 2) {
-                        withAnimation {
-                            if scale > 1 {
-                                scale = 1
-                                lastScale = 1
-                                offset = .zero
-                                lastOffset = .zero
-                            } else {
-                                scale = 2
-                                lastScale = 2
+                        .onTapGesture(count: 2) {
+                            withAnimation {
+                                if scale > 1 {
+                                    scale = 1
+                                    lastScale = 1
+                                    offset = .zero
+                                    lastOffset = .zero
+                                } else {
+                                    scale = 2
+                                    lastScale = 2
+                                }
                             }
                         }
-                    }
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                }
             } else {
                 GenericLoadingView()
             }
