@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum APODMediaType: String, Codable, CaseIterable {
+enum APODMediaType: String, Codable {
     case image
     case video
     case other

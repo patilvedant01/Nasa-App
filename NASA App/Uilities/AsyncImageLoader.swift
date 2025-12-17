@@ -12,11 +12,13 @@ import Combine
 class AsyncImageLoader: ObservableObject {
     @Published var image: UIImage?
     @Published var isLoading = false
+    @Published var shouldShowEmptyImage = false
     
     private let cache = ImageCacheService.shared
     
     func loadImage(from urlString: String?) async {
         guard let urlString = urlString else {
+            shouldShowEmptyImage = true
             return
         }
         
@@ -36,7 +38,7 @@ class AsyncImageLoader: ObservableObject {
                 self.image = uiImage
             }
         } catch {
-            print("Failed to load image: \(error)")
+            shouldShowEmptyImage = true
         }
         
         isLoading = false

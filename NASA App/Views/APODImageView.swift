@@ -35,7 +35,7 @@ struct APODImageView: View {
                                 .frame(maxWidth: .infinity)
                             GenericLoadingView()
                         }
-                    } else {
+                    } else if loader.shouldShowEmptyImage {
                         GenericEmptyView()
                     }
                 }

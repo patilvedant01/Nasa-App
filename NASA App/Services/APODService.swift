@@ -12,12 +12,20 @@ protocol APODServiceProtocol {
 }
 
 class APODService: APODServiceProtocol {
-    private let apiKey = "ZZtgNrUskPrP1L3bHm4Vk23bvjL11TQzZxGf8eSx"
+    private var apiKey: String
     private let baseURL = "https://api.nasa.gov/planetary/apod"
     private let session: URLSession
     
     init(session: URLSession = .shared) {
         self.session = session
+        
+        if let path = Bundle.main.path(forResource: "APIConfig", ofType: "plist"),
+           let config = NSDictionary(contentsOfFile: path),
+           let key = config["API_KEY"] as? String {
+            self.apiKey = key
+        } else {
+            self.apiKey = "DEMO_KEY"
+        }
     }
     
     func fetchAPOD(for date: Date? = nil) async throws -> APODResponse {

@@ -21,10 +21,4 @@ extension DateFormatter {
         components.day = 16
         return Calendar.current.date(from: components) ?? Date()
     }()
-    
-    static let displayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        return formatter
-    }()
 }
