@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct VideoThumbnailView: View {
-    let urlString: String
+    let urlString: String?
     
     var body: some View {
         ZStack {
@@ -26,7 +26,8 @@ struct VideoThumbnailView: View {
                     .foregroundColor(.white)
                     .font(.headline)
                 
-                if let url = URL(string: urlString) {
+                if let urlStr = urlString,
+                   let url = URL(string: urlStr) {
                     Link("Watch on NASA", destination: url)
                         .font(.subheadline)
                         .foregroundColor(.blue)
@@ -34,6 +35,8 @@ struct VideoThumbnailView: View {
                         .padding(.vertical, 8)
                         .background(Color.white)
                         .cornerRadius(8)
+                } else {
+                    GenericEmptyView()
                 }
             }
         }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct APODImageView: View {
-    let urlString: String
+    let urlString: String?
     let mediaType: APODMediaType
     @StateObject private var loader = AsyncImageLoader()
     
@@ -17,12 +17,16 @@ struct APODImageView: View {
             switch mediaType {
             case .video:
                 VideoThumbnailView(urlString: urlString)
-            case .image, .unknown:
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 300)
+            case .image:
                 ZStack {
                     if let image = loader.image {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity)
+                            .frame(minHeight: 200, maxHeight: 300)
                     } else if loader.isLoading {
                         ZStack {
                             Rectangle()
@@ -32,22 +36,21 @@ struct APODImageView: View {
                             GenericLoadingView()
                         }
                     } else {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(height: 300)
-                            .frame(maxWidth: .infinity)
+                        GenericEmptyView()
                     }
                 }
                 .task {
                     await loader.loadImage(from: urlString)
                 }
+            case .other:
+                GenericEmptyView()
             }
         }
     }
 }
 
 #Preview {
-    VStack {
+    VStack(spacing: 24) {
         APODImageView(
             urlString: "https://apod.nasa.gov/apod/image/1901/IC405_Abolfath_3952.jpg",
             mediaType: .image
@@ -57,9 +60,9 @@ struct APODImageView: View {
             mediaType: .video
         )
         APODImageView(
-            urlString: "https://apod.nasa.gov/apod/image/1901/IC405_Abolfath_3952.jpg",
-            mediaType: .unknown
+            urlString: nil,
+            mediaType: .other
         )
     }
+    .padding()
 }
-

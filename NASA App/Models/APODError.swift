@@ -13,7 +13,6 @@ enum APODError: LocalizedError {
     case invalidResponse
     case decodingError
     case invalidDate
-    case noData
     
     var errorDescription: String? {
         switch self {
@@ -27,8 +26,6 @@ enum APODError: LocalizedError {
             return "Failed to decode data"
         case .invalidDate:
             return "Invalid date. Please select a date between June 16, 1995 and today."
-        case .noData:
-            return "No data available"
         }
     }
 }

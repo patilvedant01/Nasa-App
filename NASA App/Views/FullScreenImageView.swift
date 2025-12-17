@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FullScreenImageView: View {
-    let urlString: String
+    let urlString: String?
     @Binding var isPresented: Bool
     @StateObject private var loader = AsyncImageLoader()
     @State private var scale: CGFloat = 1.0

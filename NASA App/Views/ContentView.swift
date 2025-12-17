@@ -36,7 +36,9 @@ struct ContentView: View {
                                 mediaType: apod.mediaType
                             )
                             .onTapGesture {
-                                showFullScreen = true
+                                if apod.mediaType != .other && (apod.hdurl != nil || apod.url != nil) {
+                                    showFullScreen = true
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {

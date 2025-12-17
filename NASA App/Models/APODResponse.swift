@@ -10,7 +10,7 @@ import Foundation
 enum APODMediaType: String, Codable, CaseIterable {
     case image
     case video
-    case unknown
+    case other
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -18,17 +18,7 @@ enum APODMediaType: String, Codable, CaseIterable {
         if let raw, let value = APODMediaType(rawValue: raw) {
             self = value
         } else {
-            self = .unknown
-        }
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch self {
-        case .image, .video:
-            try container.encode(self.rawValue)
-        case .unknown:
-            try container.encode("unknown")
+            self = .other
         }
     }
 }
@@ -41,7 +31,7 @@ struct APODResponse: Codable {
     let mediaType: APODMediaType
     let serviceVersion: String
     let title: String
-    let url: String
+    let url: String?
     
     enum CodingKeys: String, CodingKey {
         case copyright, date, explanation, hdurl

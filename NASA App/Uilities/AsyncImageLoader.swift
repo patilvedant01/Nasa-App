@@ -15,7 +15,11 @@ class AsyncImageLoader: ObservableObject {
     
     private let cache = ImageCacheService.shared
     
-    func loadImage(from urlString: String) async {
+    func loadImage(from urlString: String?) async {
+        guard let urlString = urlString else {
+            return
+        }
+        
         // Check cache first
         if let cachedImage = cache.getImage(forKey: urlString) {
             self.image = cachedImage
@@ -23,7 +27,6 @@ class AsyncImageLoader: ObservableObject {
         }
         
         guard let url = URL(string: urlString) else { return }
-        
         isLoading = true
         
         do {
