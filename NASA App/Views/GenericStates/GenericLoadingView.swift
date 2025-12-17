@@ -15,10 +15,6 @@ struct GenericLoadingView: View {
                 RedRotatingRing(size: 44, lineWidth: 6)
                     .accessibilityLabel("Loading")
                     .accessibilityAddTraits(.isImage)
-
-                Text("Loading...")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

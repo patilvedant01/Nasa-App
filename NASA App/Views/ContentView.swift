@@ -11,6 +11,7 @@ struct ContentView: View {
     @StateObject private var viewModel: APODViewModel
     @State private var showDatePicker = false
     @State private var showFullScreen = false
+    @EnvironmentObject private var themeManager: ThemeManager
     
     init(viewModel: APODViewModel = APODViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -72,6 +73,11 @@ struct ContentView: View {
             }
             .navigationTitle("NASA APOD")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {                
+                    Button(action: { themeManager.toggleLightDark() }) {
+                        Image(systemName: themeManager.theme.iconName)
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showDatePicker.toggle() }) {
                         Image(systemName: "calendar")
@@ -98,4 +104,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(ThemeManager())
 }

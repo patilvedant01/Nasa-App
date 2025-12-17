@@ -25,7 +25,6 @@ struct DatePickerView: View {
                 DatePicker(
                     "Date",
                     selection: $selectedDate,
-                    in: minDate...maxDate,
                     displayedComponents: .date
                 )
                 .datePickerStyle(.graphical)
